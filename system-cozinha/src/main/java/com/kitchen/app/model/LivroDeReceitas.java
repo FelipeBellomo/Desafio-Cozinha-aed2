@@ -7,5 +7,4 @@ public class LivroDeReceitas {
     private int id;
     private List<String> ingredientes;
 
-
 }
