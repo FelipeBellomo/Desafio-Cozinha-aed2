@@ -1,4 +1,4 @@
-package com.felipe.app;
+package com.kitchen.app.model;
 
 import java.util.List;
 

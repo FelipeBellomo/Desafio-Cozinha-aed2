@@ -1,6 +1,7 @@
-package com.felipe.app;
+package com.kitchen.app.util;
 
 import com.google.gson.Gson;
+import com.kitchen.app.model.Receita;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

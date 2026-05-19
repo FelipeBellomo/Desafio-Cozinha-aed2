@@ -1,4 +1,4 @@
-package com.felipe.app;
+package com.kitchen.app;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
