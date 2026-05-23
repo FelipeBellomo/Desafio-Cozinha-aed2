@@ -3,33 +3,27 @@ package com.kitchen.app;
 import java.util.List;
 import java.util.Scanner;
 
-import com.kitchen.app.model.Receita;
-import com.kitchen.app.util.LeitorArquivos;
+import com.kitchen.app.model.RecipeBook;
+import com.kitchen.app.model.Recipe;
+import com.kitchen.app.util.FileLoader;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )
     {
-        LeitorArquivos leitor = new LeitorArquivos();
+        FileLoader loader = new FileLoader();
 
-        List<Receita> novasReceitas = leitor.carregarDados();
-
-        if (!novasReceitas.isEmpty()) {
-            System.out.println("\nPrimeira receita da lista:");
-            System.out.println(novasReceitas.getFirst().toString());
-        }
+        List<Recipe> newRecipes = loader.loadData("pequenasReceitas.json");
+        RecipeBook recipeBook = new RecipeBook();
+        recipeBook.initializeSystem(newRecipes);
 
         Scanner scanner = new Scanner(System.in);
-        int opcao = -1;
+        int option = -1;
 
         System.out.println("Iniciando o sistema...");
-        // Aqui no futuro você instanciará o seu LeitorArquivos e carregará os dados!
+        
 
-        while (opcao != 0) {
+        while (option != 0) {
             System.out.println("\n=======================================================");
             System.out.println("        DESAFIO NA COZINHA - SISTEMA JACQUIN           ");
             System.out.println("=======================================================");
@@ -41,11 +35,10 @@ public class App
             System.out.println("0 - Sair do Sistema");
             System.out.print("Sua opção: ");
 
-            // Verifica se o usuário digitou um número para evitar que o programa quebre
             if (scanner.hasNextInt()) {
-                opcao = scanner.nextInt();
+                option = scanner.nextInt();
 
-                switch (opcao) {
+                switch (option) {
                     case 1:
                         System.out.println("\n[LOG] Acessando Módulo 1...");
                         System.out.println("[LOG] Ação: Listando todas as receitas disponíveis no sistema.");
@@ -70,7 +63,7 @@ public class App
                 }
             } else {
                 System.out.println("\n[ERRO] Entrada inválida! Por favor, digite apenas números.");
-                scanner.next(); // Limpa a entrada errada do scanner para não travar num loop infinito
+                scanner.next(); // clears the  buffer
             }
         }
 

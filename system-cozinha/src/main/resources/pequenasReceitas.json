@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "nome": "Ovos Mexidos Clássicos",
+    "categoria": "Café da Manhã",
+    "tempoPreparo": 5,
+    "custo": 3.50,
+    "dificuldade": 1,
+    "avaliacao": 4.5,
+    "quantidadePedidos": 120,
+    "ingredientes": ["ovos", "manteiga", "Sal a gosto"]
+  },
+  {
+    "id": 2,
+    "nome": "Esparguete à Carbonara",
+    "categoria": "Massa",
+    "tempoPreparo": 20,
+    "custo": 18.00,
+    "dificuldade": 3,
+    "avaliacao": 4.8,
+    "quantidadePedidos": 340,
+    "ingredientes": ["macarrão", "bacon", "gemas", "Queijo parmesão ralado", "Pimenta do reino"]
+  }
+]
