@@ -3,6 +3,7 @@ package com.kitchen.app;
 import java.util.List;
 import java.util.Scanner;
 
+import com.kitchen.app.model.ChefRecommender;
 import com.kitchen.app.model.RecipeBook;
 import com.kitchen.app.model.Recipe;
 import com.kitchen.app.util.FileLoader;
@@ -16,6 +17,7 @@ public class App
         List<Recipe> newRecipes = loader.loadData("pequenasReceitas.json");
         RecipeBook recipeBook = new RecipeBook();
         recipeBook.initializeSystem(newRecipes);
+        ChefRecommender chefRecommender = new ChefRecommender();
 
         Scanner scanner = new Scanner(System.in);
         int option = -1;
@@ -68,7 +70,36 @@ public class App
                         break;
                     case 3:
                         System.out.println("\n[LOG] Acessando Modo Chef...");
-                        System.out.println("[LOG] Ação: Preparando algoritmo guloso para recomendar pratos sob restrições (tempo, custo, dificuldade).");
+                        System.out.print("Digite o seu orçamento máximo (R$): ");
+
+                        // Limpa o buffer do scanner
+                        scanner.nextLine();
+
+                        try {
+                            double budget = Double.parseDouble(scanner.nextLine());
+
+                            // Chama o algoritmo guloso passando as receitas carregadas e o orçamento
+                            List<Recipe> recommendedMenu = chefRecommender.generateMenuByBudget(newRecipes, budget);
+
+                            if (recommendedMenu.isEmpty()) {
+                                System.out.println("\n[SISTEMA] Desculpe, seu orçamento é muito baixo para recomendar qualquer receita.");
+                            } else {
+                                System.out.println("\n--- Menu Recomendado ---");
+                                double totalCost = 0.0;
+
+                                for (Recipe recipe : recommendedMenu) {
+                                    System.out.printf("- %s (Avaliação: %.1f | Custo: R$%.2f)\n",
+                                            recipe.getName(), recipe.getRating(), recipe.getCost());
+                                    totalCost += recipe.getCost();
+                                }
+
+                                System.out.println("------------------------");
+                                System.out.printf("Custo total estimado: R$%.2f\n", totalCost);
+                                System.out.printf("Orçamento restante: R$%.2f\n", (budget - totalCost));
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("\n[ERRO] Orçamento inválido! Por favor, digite um valor numérico (ex: 25.50).");
+                        }
                         break;
                     case 4:
                         System.out.println("\n[LOG] Acessando Modo Investigação...");
