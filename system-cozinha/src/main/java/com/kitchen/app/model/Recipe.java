@@ -52,4 +52,8 @@ public class Recipe implements Serializable {
     public String toString() {
         return "Receita [" + id + "] " + name + " | Custo: " + cost + " | Avaliação: " + rating;
     }
+
+    public void setCost(double v) {
+        this.cost = v;
+    }
 }

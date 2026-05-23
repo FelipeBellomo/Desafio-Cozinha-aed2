@@ -45,7 +45,26 @@ public class App
                         break;
                     case 2:
                         System.out.println("\n[LOG] Acessando Modo Consulta Rápida...");
-                        System.out.println("[LOG] Ação: Preparando para buscar por nome, ID, categoria ou ingredientes.");
+                        System.out.print("Digite o início do nome do prato (ex: 'ome'): ");
+
+                        // Limpa o buffer do scanner (importante após usar nextInt!)
+                        scanner.nextLine();
+                        String busca = scanner.nextLine();
+
+                        System.out.println("\n--- Resultados para '" + busca + "' ---");
+
+                        // Converte para minúsculo para bater com o que foi salvo na Trie
+                        String prefixoNormalizado = busca.toLowerCase();
+
+                        // Chama o método autocomplete, que já imprime na tela e retorna a quantidade
+                        // OBS: Substitua 'recipeBook' pelo nome da variável que você usou para instanciar a classe RecipeBook
+                        int encontrados = recipeBook.getSearchTrie().autocomplete(prefixoNormalizado);
+
+                        if (encontrados == 0) {
+                            System.out.println("Nenhuma receita encontrada com esse prefixo.");
+                        } else {
+                            System.out.println("\nTotal de " + encontrados + " receita(s) encontrada(s).");
+                        }
                         break;
                     case 3:
                         System.out.println("\n[LOG] Acessando Modo Chef...");
@@ -53,7 +72,24 @@ public class App
                         break;
                     case 4:
                         System.out.println("\n[LOG] Acessando Modo Investigação...");
-                        System.out.println("[LOG] Ação: Verificando integridade das receitas e buscando conteúdos corrompidos/duplicados.");
+
+                        // 1. Fazemos a verificação inicial (deve dar tudo OK)
+                        System.out.println("\n--- Verificação de Rotina ---");
+                        // OBS: Estamos passando a 'novasReceitas' original só para testar.
+                        // Quando o projeto estiver pronto, passaremos a lista que vem do Arquivo Binário.
+                        recipeBook.verifySabotage(newRecipes);
+
+                        // 2. SIMULAÇÃO DE SABOTAGEM
+                        System.out.println("\n[SISTEMA] Simulando um ataque hacker (alterando o custo de uma receita)...");
+                        Recipe vitima = newRecipes.get(0); // Pega a primeira receita
+                        vitima.setCost(999.99); // Altera o preço de forma indevida
+
+                        // 3. Roda a verificação de novo para ver se o sistema pega o erro
+                        System.out.println("\n--- Verificação Pós-Ataque ---");
+                        recipeBook.verifySabotage(newRecipes);
+
+                        // Restaura o valor (opcional, só para não quebrar testes futuros)
+                        vitima.setCost(3.50);
                         break;
                     case 0:
                         System.out.println("\n[LOG] Encerrando o sistema. Au revoir!");
