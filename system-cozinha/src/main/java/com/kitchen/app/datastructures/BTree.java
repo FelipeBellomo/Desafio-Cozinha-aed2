@@ -149,7 +149,6 @@ public class BTree {
         parent.recipePositions[index] = fullChild.recipePositions[t - 1];
         parent.numKeys++;
         try {
-
             diskManager.writeNode(fullChild);
             diskManager.writeNode(newNode);
             diskManager.writeNode(parent);
