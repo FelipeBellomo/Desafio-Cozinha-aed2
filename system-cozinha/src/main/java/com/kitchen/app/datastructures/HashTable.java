@@ -1,12 +1,9 @@
 package com.kitchen.app.datastructures;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HashTable<K, V> {
     private static final int DEFAULT_CAPACITY = 16;
     private static final double LOAD_FACTOR_THRESHOLD = 0.75;
-
+    
     private HashNode<K, V>[] table;
     private int size;
     private int capacity;
@@ -14,7 +11,7 @@ public class HashTable<K, V> {
     @SuppressWarnings("unchecked")
     public HashTable() {
         size = 0;
-        capacity = DEFAULT_CAPACITY;
+        capacity = DEFAULT_CAPACITY;  
         table = new HashNode[this.capacity];
     }
 
@@ -25,12 +22,12 @@ public class HashTable<K, V> {
     public void put(K key, V value) {
 
         // verify if the load factor exceeds the threshold, if true, resize the table
-        if (((double) size / capacity) >= LOAD_FACTOR_THRESHOLD) {
+        if ((size/capacity) >= LOAD_FACTOR_THRESHOLD) {
             resize();
         }
 
         // apply hash function to calculate the index for the key
-        int index = calculateIndex(key, capacity);
+        int index = calculateIndex(key , capacity);
 
         HashNode<K, V> current = table[index];
 
@@ -42,7 +39,7 @@ public class HashTable<K, V> {
             }
             current = current.next;
         }
-        // insert new node at the beginning
+        // insert new node at the beginning 
         HashNode<K, V> newNode = new HashNode<>(key, value);
         newNode.next = table[index];
         table[index] = newNode;
@@ -78,51 +75,10 @@ public class HashTable<K, V> {
             }
             current = current.next;
         }
-        return null;
+        return null; 
     }
 
     public int size() {
         return size;
     }
-
-    public boolean containsKey(K key) {
-        return get(key) != null;
-    }
-
-    public boolean remove(K key) {
-        int index = calculateIndex(key, capacity);
-
-        HashNode<K, V> current = table[index];
-        HashNode<K, V> previous = null;
-
-        while (current != null) {
-            if (current.key.equals(key)) {
-                if (previous == null) {
-                    table[index] = current.next;
-                } else {
-                    previous.next = current.next;
-                }
-
-                size--;
-                return true;
-            }
-            previous = current;
-            current = current.next;
-        }
-        return false;
-    }
-
-    public List<K> keys() {
-        List<K> keysList = new ArrayList<>();
-
-        for (HashNode<K, V> node : table) {
-            while (node != null) {
-                keysList.add(node.key);
-                node = node.next;
-            }
-        }
-
-        return keysList;
-    }
-
 }

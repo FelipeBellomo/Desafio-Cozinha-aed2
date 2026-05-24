@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public class Recipe implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String name;
     private String category;
@@ -25,10 +27,6 @@ public class Recipe implements Serializable {
     public double getRating() { return rating; }
     public int getOrderCount() { return orderCount; }
     public List<String> getIngredients() { return ingredients; }
-
-    public void setId(int id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
-    public void setIngredients(List<String> ingredients) { this.ingredients = ingredients; }
 
     // generate a SHA-256 hash based on the recipe content to detect tampering
     public String generateIntegrityHash() {
