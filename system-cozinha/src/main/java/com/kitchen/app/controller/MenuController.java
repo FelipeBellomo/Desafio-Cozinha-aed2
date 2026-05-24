@@ -78,17 +78,83 @@ public class MenuController {
 
     }
 
+    // private void showQuickSearchModule() {
+    // System.out.println("\n===== CONSULTA RÁPIDA =====");
+    // System.out.print("Digite o ID da receita: ");
+
+    // int id = readInt();
+    // Recipe recipe = quickSearchService.searchById(id);
+
+    // if (recipe == null) {
+    // System.out.println("Receita não encontrada.");
+    // } else {
+    // System.out.println(recipe);
+    // }
+    // }
+
     private void showQuickSearchModule() {
         System.out.println("\n===== CONSULTA RÁPIDA =====");
-        System.out.print("Digite o ID da receita: ");
+        System.out.println("1 - Buscar por ID");
+        System.out.println("2 - Buscar por prefixo");
+        System.out.println("3 - Buscar por categoria");
+        System.out.println("4 - Buscar por ingrediente");
 
-        int id = readInt();
-        Recipe recipe = quickSearchService.searchById(id);
+        System.out.print("Escolha: ");
 
-        if (recipe == null) {
-            System.out.println("Receita não encontrada.");
-        } else {
-            System.out.println(recipe);
+        int option = readInt();
+
+        switch (option) {
+
+            case 1 -> {
+                System.out.print("Digite o ID: ");
+                int id = readInt();
+                Recipe recipe = quickSearchService.searchById(id);
+
+                if (recipe == null) {
+                    System.out.println("Receita não encontrada.");
+                } else {
+                    System.out.println(recipe);
+                }
+            }
+            case 2 -> {
+                System.out.print("Digite o prefixo: ");
+                String prefix = scanner.next();
+
+                List<String> results = quickSearchService.searchByPrefix(prefix);
+
+                if (results.isEmpty()) {
+                    System.out.println("Nenhuma receita encontrada.");
+                } else {
+                    System.out.println("\nResultados:");
+                    results.forEach(System.out::println);
+                }
+            }
+            case 3 -> {
+                System.out.print("Digite a categoria: ");
+                scanner.nextLine();
+                String category = scanner.nextLine();
+                List<Recipe> results = quickSearchService.searchByCategory(category);
+
+                if (results.isEmpty()) {
+                    System.out.println("Nenhuma receita encontrada.");
+                } else {
+                    results.forEach(System.out::println);
+                }
+            }
+            case 4 -> {
+                System.out.print("Digite o ingrediente: ");
+                scanner.nextLine();
+                String ingredient = scanner.nextLine();
+                List<Recipe> results = quickSearchService.searchByIngredient(ingredient);
+
+                if (results.isEmpty()) {
+                    System.out.println("Nenhuma receita encontrada.");
+                } else {
+                    results.forEach(System.out::println);
+                }
+            }
+            default ->
+                System.out.println("Opção inválida.");
         }
     }
 
@@ -118,9 +184,7 @@ public class MenuController {
         System.out.println("\n===== INVESTIGAÇÃO =====");
 
         var tampered = investigationService.detectTamperedRecipes(recipes, recipeBook.getIntegrityHashTable());
-
         System.out.println("\nReceitas alteradas:");
-
         if (tampered.isEmpty()) {
             System.out.println("Nenhuma detectada.");
         } else {
@@ -128,9 +192,7 @@ public class MenuController {
         }
 
         var duplicates = investigationService.detectDuplicateRecipes(recipes);
-
         System.out.println("\nReceitas duplicadas:");
-
         if (duplicates.isEmpty()) {
             System.out.println("Nenhuma detectada.");
         } else {
@@ -139,11 +201,18 @@ public class MenuController {
 
         var conflicts = investigationService.detectVersionConflicts(recipes);
         System.out.println("\nConflitos:");
-
         if (conflicts.isEmpty()) {
             System.out.println("Nenhum detectado.");
         } else {
             conflicts.forEach(System.out::println);
+        }
+
+        var validationErrors = investigationService.validateRecipes(recipes);
+        System.out.println("\nValidação:");
+        if (validationErrors.isEmpty()) {
+            System.out.println("Nenhum problema encontrado.");
+        } else {
+            validationErrors.forEach(System.out::println);
         }
     }
 }

@@ -16,6 +16,8 @@ public class RWayTrie<V> {
         if (key == null)
             throw new IllegalArgumentException("Chave nula.");
 
+        key = key.toLowerCase();
+        
         TrieNode<V> current = root;
         for (int i = 0; i < key.length(); i++) {
             char c = key.charAt(i);
@@ -33,17 +35,17 @@ public class RWayTrie<V> {
         current.val = value;
     }
 
-    // public V get(String key) {
-    // if (key == null) throw new IllegalArgumentException("Chave nula.");
+    public V get(String key) {
+    if (key == null) throw new IllegalArgumentException("Chave nula.");
 
-    // TrieNode<V> current = root;
-    // for (int i = 0; i < key.length(); i++) {
-    // char c = key.charAt(i);
-    // current = current.next[c];
-    // if (current == null) return null;
-    // }
-    // return current.val; // Não precisa mais de cast!
-    // }
+    TrieNode<V> current = root;
+    for (int i = 0; i < key.length(); i++) {
+    char c = key.charAt(i);
+    current = current.next[c];
+    if (current == null) return null;
+    }
+    return current.val; // Não precisa mais de cast!
+    }
 
     private TrieNode<V> getNode(String key) {
         TrieNode<V> current = root;
@@ -58,8 +60,14 @@ public class RWayTrie<V> {
         return current;
     }
 
+    public boolean contains(String key){
+        return getNode(key)!=null;
+    }
+
     public List<String> keysWithPrefix(String prefix) {
         List<String> results = new ArrayList<>();
+
+        prefix = prefix.toLowerCase();
 
         TrieNode<V> node = getNode(prefix);
 
@@ -89,5 +97,9 @@ public class RWayTrie<V> {
 
     public int size() {
         return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 }
