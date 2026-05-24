@@ -1,80 +1,45 @@
 package com.kitchen.app.datastructures;
 
-public class RWayTrie {
-
-    private TrieNode root;
+public class RWayTrie<V> {
+    private TrieNode<V> root; // Agora o tipo V é passado explicitamente
+    private int size;
 
     public RWayTrie() {
-        root = new TrieNode();
+        root = new TrieNode<>();
+        size = 0;
     }
 
-    /**
-     * Inserts the recipe into the Trie.
-     *
-     * @param normalizedName The string used for routing (lowercase, no accents)
-     * @param originalName The original string to be displayed
-     * @param id The recipe ID
-     */
-    public void insert(String normalizedName, String originalName, int id) {
-        TrieNode current = root;
+    public void put(String key, V value) {
+        if (key == null) throw new IllegalArgumentException("Chave nula.");
 
-        for (int i = 0; i < normalizedName.length(); i++) {
-            char c = normalizedName.charAt(i);
-
-            // If the child node for this letter doesn't exist yet, we create it
-            if (current.children[c] == null) {
-                current.children[c] = new TrieNode();
+        TrieNode<V> current = root;
+        for (int i = 0; i < key.length(); i++) {
+            char c = key.charAt(i);
+            if (current.next[c] == null) {
+                current.next[c] = new TrieNode<>();
             }
-            current = current.children[c]; // Move down to the next node
+            current = current.next[c];
         }
 
-        current.isEndOfWord = true;
-        current.originalName = originalName;
-        current.recipeId = id;
+        if (current.val == null && value != null) size++;
+        else if (current.val != null && value == null) size--;
+
+        current.val = value;
     }
 
-    /**
-     * Searches and prints suggestions directly (avoiding Java's ArrayList).
-     * Returns the amount of results found.
-     *
-     * @param normalizedPrefix The prefix typed by the user (normalized)
-     * @return Number of recipes found
-     */
-    public int autocomplete(String normalizedPrefix) {
-        TrieNode current = root;
+    public V get(String key) {
+        if (key == null) throw new IllegalArgumentException("Chave nula.");
 
-        // 1. Navigate to the end of the prefix
-        for (int i = 0; i < normalizedPrefix.length(); i++) {
-            char c = normalizedPrefix.charAt(i);
-
-            if (current.children[c] == null) {
-                return 0; // Prefix does not exist in the tree
-            }
-            current = current.children[c];
+        TrieNode<V> current = root;
+        for (int i = 0; i < key.length(); i++) {
+            char c = key.charAt(i);
+            current = current.next[c];
+            if (current == null) return null;
         }
-
-        // 2. Depth-First Search to find the words
-        return collectWords(current);
+        return current.val; // Não precisa mais de cast!
     }
 
-    /**
-     * Depth-First Search (DFS). Prints the result and returns how many were found.
-     */
-    private int collectWords(TrieNode node) {
-        int count = 0;
-
-        if (node.isEndOfWord) {
-            System.out.println(" -> [ID: " + node.recipeId + "] " + node.originalName);
-            count++;
-        }
-
-        // Iterate through the 256 array positions looking for valid paths
-        for (int i = 0; i < 256; i++) {
-            if (node.children[i] != null) {
-                count += collectWords(node.children[i]);
-            }
-        }
-
-        return count;
+    public int size() {
+        return size;
     }
 }
