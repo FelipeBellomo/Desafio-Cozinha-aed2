@@ -49,7 +49,7 @@ public class MenuController {
 
     private void showMainMenu() {
         System.out.println("\n=======================================================");
-        System.out.println("        DESAFIO NA COZINHA - SISTEMA JACQUIN           ");
+        System.out.println("                   DESAFIO NA COZINHA                  ");
         System.out.println("=======================================================");
 
         System.out.println("1 - Livro de Receitas");
@@ -77,20 +77,6 @@ public class MenuController {
             System.out.println(recipe);
 
     }
-
-    // private void showQuickSearchModule() {
-    // System.out.println("\n===== CONSULTA RÁPIDA =====");
-    // System.out.print("Digite o ID da receita: ");
-
-    // int id = readInt();
-    // Recipe recipe = quickSearchService.searchById(id);
-
-    // if (recipe == null) {
-    // System.out.println("Receita não encontrada.");
-    // } else {
-    // System.out.println(recipe);
-    // }
-    // }
 
     private void showQuickSearchModule() {
         System.out.println("\n===== CONSULTA RÁPIDA =====");
@@ -158,9 +144,33 @@ public class MenuController {
         }
     }
 
-    private void showChefModule() {
-        System.out.println("\n===== MODO CHEF =====");
+    private void showTopRecommendations() {
+        System.out.print("Tempo máximo (min): ");
+        int maxTime = readInt();
 
+        System.out.print("Orçamento máximo (R$): ");
+        double maxBudget = scanner.nextDouble();
+
+        System.out.print("Dificuldade máxima: ");
+        int maxDifficulty = readInt();
+        scanner.nextLine(); 
+
+
+        List<Recipe> recommendations = chefService.recommendTopRecipes(recipes, maxTime, maxBudget, maxDifficulty,3);
+
+        if (recommendations == null || recommendations.isEmpty()) {
+            System.out.println("\n Nenhuma receita encontrada.");
+        } else {
+            System.out.println("\n Top " + recommendations.size() + " seleções do Chef:");
+            for (int i = 0; i < recommendations.size(); i++) {
+                Recipe recipe = recommendations.get(i);
+                System.out.printf("%d° - ",(i+1));
+                System.out.println(recipe);
+            }
+        }
+    }
+
+    private void showPersonalizedRecommendation() {
         System.out.print("Tempo máximo (min): ");
         int maxTime = readInt();
 
@@ -177,6 +187,28 @@ public class MenuController {
         } else {
             System.out.println("\nMelhor recomendação:");
             System.out.println(bestRecipe);
+        }
+    }
+
+    private void showChefModule() {
+        System.out.println("\n===== MODO CHEF =====");
+        System.out.println("1 - Top Recomendações");
+        System.out.println("2 - Recomendações Personalizadas");
+        System.out.print("Escolha: ");
+
+        int option = -1;
+        option = readInt();
+
+        switch (option) {
+            case 1:
+                showTopRecommendations();
+                break;
+            case 2:
+                showPersonalizedRecommendation();
+                break;
+            default:
+                System.out.println("\nOpção inválida.");
+                break;
         }
     }
 
