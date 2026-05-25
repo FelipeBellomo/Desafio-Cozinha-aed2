@@ -161,10 +161,10 @@ public class MenuController {
     private void showChefModule() {
         System.out.println("\n===== MODO CHEF =====");
 
-        System.out.print("Tempo máximo: ");
+        System.out.print("Tempo máximo (min): ");
         int maxTime = readInt();
 
-        System.out.print("Orçamento máximo: ");
+        System.out.print("Orçamento máximo (R$): ");
         double maxBudget = scanner.nextDouble();
 
         System.out.print("Dificuldade máxima: ");

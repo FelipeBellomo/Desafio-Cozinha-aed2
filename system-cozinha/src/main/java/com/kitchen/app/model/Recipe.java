@@ -28,6 +28,12 @@ public class Recipe implements Serializable {
 
     public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }
+    public void setCategory(String category) { this.category = category; }
+    public void setPrepTime(int prepTime) { this.prepTime = prepTime; }
+    public void setCost(double cost) { this.cost=cost; }
+    public void setDifficulty(int difficulty) { this.difficulty=difficulty; }
+    public void setRating(double rating) { this.rating=rating; }
+    public void setOrderCount(int orderCount) { this.orderCount=orderCount; }
     public void setIngredients(List<String> ingredients) { this.ingredients = ingredients; }
 
     // generate a SHA-256 hash based on the recipe content to detect tampering
@@ -52,6 +58,6 @@ public class Recipe implements Serializable {
 
     @Override
     public String toString() {
-        return "Receita [" + id + "] " + name + " | Custo: " + cost + " | Avaliação: " + rating;
+        return "Receita [" + id + "] " + name + " | Categoria: "+ category+ " | Custo: " + cost + " | Avaliação: " + rating;
     }
 }
