@@ -13,6 +13,22 @@ public class DiskManager {
 
     public DiskManager(String fileName) throws IOException {
         file = new RandomAccessFile(fileName, "rw");
+
+        if (file.length() == 0) {
+            file.setLength(8); 
+            file.seek(0);
+            file.writeLong(-1); // -1 indica que ainda não tem raiz
+        }
+    }
+
+    public void saveRootPosition(long rootPosition) throws IOException {
+        file.seek(0);
+        file.writeLong(rootPosition);
+    }
+
+    public long getRootPosition() throws IOException {
+        file.seek(0);
+        return file.readLong();
     }
 
     public long allocateNode() throws IOException {

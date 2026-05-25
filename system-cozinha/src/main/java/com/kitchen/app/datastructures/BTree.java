@@ -16,13 +16,35 @@ public class BTree {
 
         try {
             diskManager = new DiskManager(fileName);
-            root = new BTreeNode(t, true);
-            root.selfPosition = diskManager.allocateNode();
-            diskManager.writeNode(root);
+            long rootPos = diskManager.getRootPosition();
+            
+            if (rootPos != -1) {
+                // O arquivo já existe! Carrega a raiz do disco
+                root = diskManager.readNode(rootPos, t);
+                System.out.println("Árvore B carregada do disco (Raiz na posição: " + rootPos + ")");
+            } else {
+                // Arquivo novo, cria a raiz do zero
+                root = new BTreeNode(t, true);
+                root.selfPosition = diskManager.allocateNode();
+                diskManager.writeNode(root);
+                diskManager.saveRootPosition(root.selfPosition);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+    // public BTree(String fileName, int t) {
+    //     this.t = t;
+
+    //     try {
+    //         diskManager = new DiskManager(fileName);
+    //         root = new BTreeNode(t, true);
+    //         root.selfPosition = diskManager.allocateNode();
+    //         diskManager.writeNode(root);
+    //     } catch (Exception e) {
+    //         throw new RuntimeException(e);
+    //     }
+    // }
 
     public Long search(int key) {
         return search(root.selfPosition, key);
@@ -64,6 +86,12 @@ public class BTree {
             newRoot.childrenPositions[0] = rootNode.selfPosition;
             splitChild(newRoot, 0, rootNode);
             root = newRoot;
+
+            try {
+                diskManager.saveRootPosition(root.selfPosition);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         insertNonFull(root, key, recipePosition);
