@@ -17,7 +17,7 @@ public class DiskManager {
         if (file.length() == 0) {
             file.setLength(8); 
             file.seek(0);
-            file.writeLong(-1); // -1 indica que ainda não tem raiz
+            file.writeLong(-1); // -1 doesnt have root
         }
     }
 
@@ -42,15 +42,14 @@ public class DiskManager {
         file.writeBoolean(node.isLeaf);
         file.writeInt(node.numKeys);
 
-        for (int i = 0; i < (2 * node.t - 1); i++)
+        for (int i = 0; i < node.maxKeys; i++)
             file.writeInt(node.keys[i]);
 
-        for (int i = 0; i < (2 * node.t - 1); i++)
+        for (int i = 0; i < node.maxKeys; i++)
             file.writeLong(node.recipePositions[i]);
 
-        for (int i = 0; i < (2 * node.t); i++)
+        for (int i = 0; i < node.maxChilds; i++)
             file.writeLong(node.childrenPositions[i]);
-
     }
 
     public BTreeNode readNode(long position, int t) throws IOException {
@@ -62,13 +61,13 @@ public class DiskManager {
         node.selfPosition = position;
         node.numKeys = file.readInt();
 
-        for (int i = 0; i < (2 * t - 1); i++)
+        for (int i = 0; i < node.maxKeys; i++)
             node.keys[i] = file.readInt();
 
-        for (int i = 0; i < (2 * t - 1); i++)
+        for (int i = 0; i < node.maxKeys; i++)
             node.recipePositions[i] = file.readLong();
 
-        for (int i = 0; i < (2 * t); i++)
+        for (int i = 0; i < node.maxChilds; i++)
             node.childrenPositions[i] = file.readLong();
 
         return node;

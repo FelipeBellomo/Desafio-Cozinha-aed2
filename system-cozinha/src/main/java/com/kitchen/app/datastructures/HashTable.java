@@ -1,8 +1,5 @@
 package com.kitchen.app.datastructures;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HashTable<K, V> {
     private static final int DEFAULT_CAPACITY = 16;
     private static final double LOAD_FACTOR_THRESHOLD = 0.75;
@@ -88,41 +85,4 @@ public class HashTable<K, V> {
     public boolean containsKey(K key) {
         return get(key) != null;
     }
-
-    public boolean remove(K key) {
-        int index = calculateIndex(key, capacity);
-
-        HashNode<K, V> current = table[index];
-        HashNode<K, V> previous = null;
-
-        while (current != null) {
-            if (current.key.equals(key)) {
-                if (previous == null) {
-                    table[index] = current.next;
-                } else {
-                    previous.next = current.next;
-                }
-
-                size--;
-                return true;
-            }
-            previous = current;
-            current = current.next;
-        }
-        return false;
-    }
-
-    public List<K> keys() {
-        List<K> keysList = new ArrayList<>();
-
-        for (HashNode<K, V> node : table) {
-            while (node != null) {
-                keysList.add(node.key);
-                node = node.next;
-            }
-        }
-
-        return keysList;
-    }
-
 }

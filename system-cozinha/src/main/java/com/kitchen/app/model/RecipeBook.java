@@ -38,7 +38,7 @@ public class RecipeBook {
 
             addToCategoryIndex(recipe);
             addToIngredientIndex(recipe);
-            
+
             long position = recipeStorage.saveRecipe(recipe);
 
             bTree.insert(recipe.getId(), position);
@@ -116,7 +116,4 @@ public class RecipeBook {
         return integrityHashTable;
     }
 
-    public BTree getBTree() {
-        return bTree;
-    }
 }

@@ -9,22 +9,21 @@ public class BTree {
     private BTreeNode root;
     private DiskManager diskManager;
 
-    private int t;
+    private int m;
 
-    public BTree(String fileName, int t) {
-        this.t = t;
-
+    public BTree(String fileName, int m) {
+        this.m = m;
         try {
             diskManager = new DiskManager(fileName);
             long rootPos = diskManager.getRootPosition();
-            
+
             if (rootPos != -1) {
-                // O arquivo já existe! Carrega a raiz do disco
-                root = diskManager.readNode(rootPos, t);
+                // file exists
+                root = diskManager.readNode(rootPos, m);
                 System.out.println("Árvore B carregada do disco (Raiz na posição: " + rootPos + ")");
             } else {
-                // Arquivo novo, cria a raiz do zero
-                root = new BTreeNode(t, true);
+                // file doesnt exists
+                root = new BTreeNode(m, true);
                 root.selfPosition = diskManager.allocateNode();
                 diskManager.writeNode(root);
                 diskManager.saveRootPosition(root.selfPosition);
@@ -33,18 +32,6 @@ public class BTree {
             throw new RuntimeException(e);
         }
     }
-    // public BTree(String fileName, int t) {
-    //     this.t = t;
-
-    //     try {
-    //         diskManager = new DiskManager(fileName);
-    //         root = new BTreeNode(t, true);
-    //         root.selfPosition = diskManager.allocateNode();
-    //         diskManager.writeNode(root);
-    //     } catch (Exception e) {
-    //         throw new RuntimeException(e);
-    //     }
-    // }
 
     public Long search(int key) {
         return search(root.selfPosition, key);
@@ -52,7 +39,7 @@ public class BTree {
 
     private Long search(long nodePosition, int key) {
         try {
-            BTreeNode node = diskManager.readNode(nodePosition, t);
+            BTreeNode node = diskManager.readNode(nodePosition, m);
             int i = 0;
 
             while (i < node.numKeys && key > node.keys[i])
@@ -74,8 +61,8 @@ public class BTree {
     public void insert(int key, long recipePosition) {
         BTreeNode rootNode = root;
 
-        if (rootNode.numKeys == (2 * t - 1)) {
-            BTreeNode newRoot = new BTreeNode(t, false);
+        if (rootNode.numKeys == root.maxKeys) {
+            BTreeNode newRoot = new BTreeNode(m, false);
 
             try {
                 newRoot.selfPosition = diskManager.allocateNode();
@@ -102,6 +89,7 @@ public class BTree {
         if (node.isLeaf) {
             while (i >= 0 && key < node.keys[i]) {
                 node.keys[i + 1] = node.keys[i];
+                node.recipePositions[i + 1] = node.recipePositions[i];
                 i--;
             }
 
@@ -115,15 +103,15 @@ public class BTree {
 
             i++;
             try {
-                BTreeNode child = diskManager.readNode(node.childrenPositions[i], t);
+                BTreeNode child = diskManager.readNode(node.childrenPositions[i], m);
 
-                if (child.numKeys == (2 * t - 1)) {
+                if (child.numKeys == root.maxKeys) {
                     splitChild(node, i, child);
 
                     if (key > node.keys[i])
                         i++;
 
-                    child = diskManager.readNode(node.childrenPositions[i], t);
+                    child = diskManager.readNode(node.childrenPositions[i], m);
                 }
 
                 insertNonFull(child, key, recipePosition);
@@ -140,9 +128,9 @@ public class BTree {
     }
 
     private void splitChild(BTreeNode parent, int index, BTreeNode fullChild) {
-        BTreeNode newNode = new BTreeNode(fullChild.t, fullChild.isLeaf);
+        BTreeNode newNode = new BTreeNode(fullChild.m, fullChild.isLeaf);
 
-        newNode.numKeys = t - 1;
+        newNode.numKeys = m - 1;
 
         try {
             newNode.selfPosition = diskManager.allocateNode();
@@ -150,18 +138,18 @@ public class BTree {
             throw new RuntimeException(e);
         }
 
-        for (int j = 0; j < t - 1; j++) {
-            newNode.keys[j] = fullChild.keys[j + t];
-            newNode.recipePositions[j] = fullChild.recipePositions[j + t];
+        for (int j = 0; j < m - 1; j++) {
+            newNode.keys[j] = fullChild.keys[j + m];
+            newNode.recipePositions[j] = fullChild.recipePositions[j + m];
         }
 
         if (!fullChild.isLeaf) {
-            for (int j = 0; j < t; j++) {
-                newNode.childrenPositions[j] = fullChild.childrenPositions[j + t];
+            for (int j = 0; j < m; j++) {
+                newNode.childrenPositions[j] = fullChild.childrenPositions[j + m];
             }
         }
 
-        fullChild.numKeys = t - 1;
+        fullChild.numKeys = m - 1;
 
         for (int j = parent.numKeys; j >= index + 1; j--) {
             parent.childrenPositions[j + 1] = parent.childrenPositions[j];
@@ -173,8 +161,8 @@ public class BTree {
             parent.recipePositions[j + 1] = parent.recipePositions[j];
         }
 
-        parent.keys[index] = fullChild.keys[t - 1];
-        parent.recipePositions[index] = fullChild.recipePositions[t - 1];
+        parent.keys[index] = fullChild.keys[m - 1];
+        parent.recipePositions[index] = fullChild.recipePositions[m - 1];
         parent.numKeys++;
         try {
             diskManager.writeNode(fullChild);
@@ -185,30 +173,4 @@ public class BTree {
         }
     }
 
-    // private BTreeNode searchDisk(
-    //         long nodePosition,
-    //         int key) throws IOException {
-
-    //     BTreeNode node = diskManager.readNode(nodePosition, t);
-
-    //     int i = 0;
-
-    //     while (i < node.numKeys &&
-    //             key > node.keys[i]) {
-    //         i++;
-    //     }
-
-    //     if (i < node.numKeys &&
-    //             node.keys[i] == key) {
-    //         return node;
-    //     }
-
-    //     if (node.isLeaf) {
-    //         return null;
-    //     }
-
-    //     return searchDisk(
-    //             node.childrenPositions[i],
-    //             key);
-    // }
 }
