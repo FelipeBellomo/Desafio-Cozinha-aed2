@@ -3,7 +3,7 @@ package com.kitchen.app.util;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import com.kitchen.app.datastructures.BTreeNode;
+import com.kitchen.app.datastructures.btree.BTreeNode;
 
 public class DiskManager {
 

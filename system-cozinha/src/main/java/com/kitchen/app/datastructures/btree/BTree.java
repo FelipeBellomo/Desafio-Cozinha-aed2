@@ -1,4 +1,4 @@
-package com.kitchen.app.datastructures;
+package com.kitchen.app.datastructures.btree;
 
 import java.io.IOException;
 

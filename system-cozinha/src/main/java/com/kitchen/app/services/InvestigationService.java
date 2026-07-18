@@ -1,6 +1,6 @@
 package com.kitchen.app.services;
 
-import com.kitchen.app.datastructures.HashTable;
+import com.kitchen.app.datastructures.hash.HashTable;
 import com.kitchen.app.model.Recipe;
 
 import java.util.ArrayList;

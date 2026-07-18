@@ -1,4 +1,4 @@
-package com.kitchen.app.datastructures;
+package com.kitchen.app.datastructures.hash;
 
 public class HashNode<K, V> {
     public K key;

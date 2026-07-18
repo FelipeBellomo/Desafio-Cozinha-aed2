@@ -1,8 +1,8 @@
 package com.kitchen.app.model;
 
-import com.kitchen.app.datastructures.BTree;
-import com.kitchen.app.datastructures.HashTable;
-import com.kitchen.app.datastructures.RWayTrie;
+import com.kitchen.app.datastructures.btree.BTree;
+import com.kitchen.app.datastructures.hash.HashTable;
+import com.kitchen.app.datastructures.rway.RWayTrie;
 import com.kitchen.app.util.RecipeStorage;
 
 import java.io.IOException;

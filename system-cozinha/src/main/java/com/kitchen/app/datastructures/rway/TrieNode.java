@@ -1,4 +1,4 @@
-package com.kitchen.app.datastructures;
+package com.kitchen.app.datastructures.rway;
 
 // Visibilidade de pacote (package-private) para proteger a estrutura
 class TrieNode<V> {

@@ -25,6 +25,7 @@ public class Recipe implements Serializable {
     public double getRating() { return rating; }
     public int getOrderCount() { return orderCount; }
     public List<String> getIngredients() { return ingredients; }
+    public double getProfit() { return this.getCost() * 0.5; } // lucro de 50% em cada receita
 
     public void setId(int id) { this.id = id; }
     public void setName(String name) { this.name = name; }

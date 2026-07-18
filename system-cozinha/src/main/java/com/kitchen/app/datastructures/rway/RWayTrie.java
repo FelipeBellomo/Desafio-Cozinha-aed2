@@ -1,4 +1,4 @@
-package com.kitchen.app.datastructures;
+package com.kitchen.app.datastructures.rway;
 
 import java.util.ArrayList;
 import java.util.List;

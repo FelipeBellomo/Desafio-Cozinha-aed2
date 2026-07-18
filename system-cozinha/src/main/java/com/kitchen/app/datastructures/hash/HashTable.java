@@ -1,4 +1,4 @@
-package com.kitchen.app.datastructures;
+package com.kitchen.app.datastructures.hash;
 
 public class HashTable<K, V> {
     private static final int DEFAULT_CAPACITY = 16;

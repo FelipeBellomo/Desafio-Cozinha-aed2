@@ -1,5 +1,6 @@
 package com.kitchen.app.services;
 
+import com.kitchen.app.datastructures.dp.MenuOptimizer;
 import com.kitchen.app.model.Recipe;
 
 import java.util.ArrayList;
@@ -58,5 +59,15 @@ public class ChefService {
             return filtered.subList(0, limit);
 
         return filtered;
+    }
+
+    /**
+     * Recommends a full optimized VIP menu based on maximum time.
+     */
+    public List<Recipe> generateOptimizedVipMenu(List<Recipe> recipes, double limit, int constraintType, int optimizationGoal) {
+        // Se a restrição for orçamento (2), converte R$ para centavos para a matriz DP
+        int capacity = (constraintType == 1) ? (int) limit : (int) Math.round(limit * 100);
+
+        return MenuOptimizer.optimizeMenu(recipes, capacity, constraintType, optimizationGoal);
     }
 }
