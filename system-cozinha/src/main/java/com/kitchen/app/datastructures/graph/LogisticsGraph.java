@@ -16,13 +16,11 @@ public class LogisticsGraph {
         }
     }
 
-    // Adiciona uma rua de mão dupla (ida e volta)
     public void addTwoWayRoute(int locationA, int locationB, double weight, int capacity) {
         adjacencies[locationA].add(new Route(locationB, weight, capacity));
         adjacencies[locationB].add(new Route(locationA, weight, capacity));
     }
 
-    // Adiciona uma rua de mão única
     public void addOneWayRoute(int source, int destination, double weight, int capacity) {
         adjacencies[source].add(new Route(destination, weight, capacity));
     }

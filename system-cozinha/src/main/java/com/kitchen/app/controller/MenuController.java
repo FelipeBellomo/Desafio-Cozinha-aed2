@@ -19,8 +19,9 @@ public class MenuController {
     private final InvestigationService investigationService;
     private final QuickSearchService quickSearchService;
 
-    private final DependencyGraph productionGraph;
-    private final LogisticsGraph logisticsGraph; // Novo grafo logístico
+    private final KosarajuAlgorithm productionGraph;
+    // private final DependencyGraph productionGraph;
+    private final LogisticsGraph logisticsGraph;
 
     public MenuController(RecipeBook recipeBook, List<Recipe> recipes) {
         this.recipeBook = recipeBook;
@@ -30,10 +31,9 @@ public class MenuController {
         this.investigationService = new InvestigationService();
         this.quickSearchService = new QuickSearchService(recipeBook);
 
-        this.productionGraph = new DependencyGraph(60);
+        this.productionGraph = new KosarajuAlgorithm(60);
         setupMockDependencies();
 
-        // Inicializando o Grafo Logístico com 5 pontos (0 a 4)
         this.logisticsGraph = new LogisticsGraph(5);
         setupMockLogistics();
     }
@@ -41,7 +41,11 @@ public class MenuController {
     private void setupMockDependencies() {
         productionGraph.addDependency(1, 2);
         productionGraph.addDependency(11, 12);
-        // productionGraph.addDependency(12, 11); // Descomente para testar ciclo
+
+        // Kosaraju
+        // productionGraph.addDependency(20, 21);
+        // productionGraph.addDependency(21, 22);
+        // productionGraph.addDependency(22, 20);
     }
 
     private void setupMockLogistics() {
@@ -72,7 +76,8 @@ public class MenuController {
                 case 3 -> showChefModule();
                 case 4 -> showInvestigationModule();
                 case 5 -> showProductionModule();
-                case 6 -> showLogisticsModule(); // Chamada do Módulo 7
+                case 6 -> showLogisticsModule();
+                case 7 -> showInnovationModule();
                 case 0 -> System.out.println("\nEncerrando sistema...");
                 default -> System.out.println("\nOpção inválida.");
             }
@@ -91,7 +96,8 @@ public class MenuController {
         System.out.println("3 - Modo Chef (Módulo 6)");
         System.out.println("4 - Investigação");
         System.out.println("5 - Oficina de Produção (Módulo 5)");
-        System.out.println("6 - Logística e Delivery (Módulo 7)"); // Nova Opção
+        System.out.println("6 - Logística e Delivery (Módulo 7)");
+        System.out.println("7 - Laboratório de Inovação (Módulo 8)");
         System.out.println("0 - Sair");
 
         System.out.print("Escolha: ");
@@ -104,10 +110,6 @@ public class MenuController {
         }
         return scanner.nextInt();
     }
-
-    // =========================================================================
-    // MÓDULOS 1, 2, 3 E 4 (Mantidos inalterados)
-    // =========================================================================
 
     private void showRecipeModule() {
         System.out.println("\n===== LIVRO DE RECEITAS =====");
@@ -130,14 +132,17 @@ public class MenuController {
                 System.out.print("Digite o ID: ");
                 int id = readInt();
                 Recipe recipe = quickSearchService.searchById(id);
-                if (recipe == null) System.out.println("Receita não encontrada.");
-                else System.out.println(recipe);
+                if (recipe == null)
+                    System.out.println("Receita não encontrada.");
+                else
+                    System.out.println(recipe);
             }
             case 2 -> {
                 System.out.print("Digite o prefixo: ");
                 String prefix = scanner.next();
                 List<String> results = quickSearchService.searchByPrefix(prefix);
-                if (results.isEmpty()) System.out.println("Nenhuma receita encontrada.");
+                if (results.isEmpty())
+                    System.out.println("Nenhuma receita encontrada.");
                 else {
                     System.out.println("\nResultados:");
                     results.forEach(System.out::println);
@@ -148,16 +153,20 @@ public class MenuController {
                 scanner.nextLine();
                 String category = scanner.nextLine();
                 List<Recipe> results = quickSearchService.searchByCategory(category);
-                if (results.isEmpty()) System.out.println("Nenhuma receita encontrada.");
-                else results.forEach(System.out::println);
+                if (results.isEmpty())
+                    System.out.println("Nenhuma receita encontrada.");
+                else
+                    results.forEach(System.out::println);
             }
             case 4 -> {
                 System.out.print("Digite o ingrediente: ");
                 scanner.nextLine();
                 String ingredient = scanner.nextLine();
                 List<Recipe> results = quickSearchService.searchByIngredient(ingredient);
-                if (results.isEmpty()) System.out.println("Nenhuma receita encontrada.");
-                else results.forEach(System.out::println);
+                if (results.isEmpty())
+                    System.out.println("Nenhuma receita encontrada.");
+                else
+                    results.forEach(System.out::println);
             }
             default -> System.out.println("Opção inválida.");
         }
@@ -172,14 +181,14 @@ public class MenuController {
         int maxDifficulty = readInt();
         scanner.nextLine();
 
-        List<Recipe> recommendations = chefService.recommendTopRecipes(recipes, maxTime, maxBudget, maxDifficulty,3);
+        List<Recipe> recommendations = chefService.recommendTopRecipes(recipes, maxTime, maxBudget, maxDifficulty, 3);
         if (recommendations == null || recommendations.isEmpty()) {
             System.out.println("\n Nenhuma receita encontrada.");
         } else {
             System.out.println("\n Top " + recommendations.size() + " seleções do Chef:");
             for (int i = 0; i < recommendations.size(); i++) {
                 Recipe recipe = recommendations.get(i);
-                System.out.printf("%d° - ",(i+1));
+                System.out.printf("%d° - ", (i + 1));
                 System.out.println(recipe);
             }
         }
@@ -238,7 +247,8 @@ public class MenuController {
 
             System.out.println("\n[LOG] DETALHAMENTO DAS RECEITAS ESCOLHIDAS:");
             for (Recipe r : vipMenu) {
-                System.out.printf("[LOG] -> Adicionado: %s (Tempo: %d min | Custo: R$%.2f | Lucro: R$%.2f | Rating: %.1f)\n",
+                System.out.printf(
+                        "[LOG] -> Adicionado: %s (Tempo: %d min | Custo: R$%.2f | Lucro: R$%.2f | Rating: %.1f)\n",
                         r.getName(), r.getPrepTime(), r.getCost(), r.getProfit(), r.getRating());
             }
         }
@@ -263,28 +273,33 @@ public class MenuController {
         System.out.println("\n===== INVESTIGAÇÃO =====");
         var tampered = investigationService.detectTamperedRecipes(recipes, recipeBook.getIntegrityHashTable());
         System.out.println("\nReceitas alteradas:");
-        if (tampered.isEmpty()) System.out.println("Nenhuma detectada.");
-        else tampered.forEach(System.out::println);
+        if (tampered.isEmpty())
+            System.out.println("Nenhuma detectada.");
+        else
+            tampered.forEach(System.out::println);
 
         var duplicates = investigationService.detectDuplicateRecipes(recipes);
         System.out.println("\nReceitas duplicadas:");
-        if (duplicates.isEmpty()) System.out.println("Nenhuma detectada.");
-        else duplicates.forEach(System.out::println);
+        if (duplicates.isEmpty())
+            System.out.println("Nenhuma detectada.");
+        else
+            duplicates.forEach(System.out::println);
 
         var conflicts = investigationService.detectVersionConflicts(recipes);
         System.out.println("\nConflitos:");
-        if (conflicts.isEmpty()) System.out.println("Nenhum detectado.");
-        else conflicts.forEach(System.out::println);
+        if (conflicts.isEmpty())
+            System.out.println("Nenhum detectado.");
+        else
+            conflicts.forEach(System.out::println);
 
         var validationErrors = investigationService.validateRecipes(recipes);
         System.out.println("\nValidação:");
-        if (validationErrors.isEmpty()) System.out.println("Nenhum problema encontrado.");
-        else validationErrors.forEach(System.out::println);
+        if (validationErrors.isEmpty())
+            System.out.println("Nenhum problema encontrado.");
+        else
+            validationErrors.forEach(System.out::println);
     }
 
-    // =========================================================================
-    // MÓDULO 5: OFICINA DE PRODUÇÃO
-    // =========================================================================
     private void showProductionModule() {
         System.out.println("\n===== OFICINA DE PRODUÇÃO =====");
         System.out.println("1 - Verificar Inconsistências (Erros de Dependência)");
@@ -328,7 +343,8 @@ public class MenuController {
             }
             case 2 -> {
                 if (productionGraph.getDependencyCycle() != null) {
-                    System.out.println("\n[ERRO] Não é possível gerar a sequência. Corrija o ciclo de dependências primeiro.");
+                    System.out.println(
+                            "\n[ERRO] Não é possível gerar a sequência. Corrija o ciclo de dependências primeiro.");
                 } else {
                     GraphStack prepOrder = productionGraph.getCorrectSequence();
 
@@ -340,7 +356,8 @@ public class MenuController {
                         Recipe recipe = quickSearchService.searchById(currentId);
 
                         if (recipe != null) {
-                            if (!isFirst) System.out.print(" -> ");
+                            if (!isFirst)
+                                System.out.print(" -> ");
                             System.out.print(recipe.getName() + " [ID: " + currentId + "]");
                             isFirst = false;
                         }
@@ -365,9 +382,6 @@ public class MenuController {
         }
     }
 
-    // =========================================================================
-    // MÓDULO 7: LOGÍSTICA E DELIVERY
-    // =========================================================================
     private void showLogisticsModule() {
         System.out.println("\n===== MÓDULO 7: O PESADELO LOGÍSTICO =====");
         System.out.println("1 - Estimar Tempos de Entrega (Algoritmo de Dijkstra)");
@@ -376,11 +390,13 @@ public class MenuController {
         System.out.print("Escolha: ");
         int option = readInt();
 
-        String[] locationNames = {"Restaurante Principal", "Ponto Centro", "Ponto Fragata", "Ponto Três Vendas", "Ponto Laranjal"};
+        String[] locationNames = { "Restaurante Principal", "Ponto Centro", "Ponto Fragata", "Ponto Três Vendas",
+                "Ponto Laranjal" };
 
         switch (option) {
             case 1 -> {
-                System.out.println("\n[LOG] Calculando as rotas mais rápidas a partir do Restaurante Principal (ID 0)...");
+                System.out.println(
+                        "\n[LOG] Calculando as rotas mais rápidas a partir do Restaurante Principal (ID 0)...");
                 double[] shortestTimes = DijkstraAlgorithm.calculateShortestTimes(logisticsGraph, 0);
 
                 System.out.println("\n--- ESTIMATIVA DE TEMPO DE ENTREGA ---");
@@ -388,7 +404,8 @@ public class MenuController {
                     if (shortestTimes[i] == Double.MAX_VALUE) {
                         System.out.printf("Destino: %-20s | Status: Rota Inacessível!\n", locationNames[i]);
                     } else {
-                        System.out.printf("Destino: %-20s | Tempo Mínimo Estimado: %.1f minutos\n", locationNames[i], shortestTimes[i]);
+                        System.out.printf("Destino: %-20s | Tempo Mínimo Estimado: %.1f minutos\n", locationNames[i],
+                                shortestTimes[i]);
                     }
                 }
                 System.out.println("--------------------------------------");
@@ -432,12 +449,60 @@ public class MenuController {
                     int maxOrders = FordFulkersonAlgorithm.calculateMaxCapacity(logisticsGraph, 0, destination);
 
                     System.out.println("===============================================================");
-                    System.out.printf("[RESULTADO] A capacidade máxima de atendimento simultâneo para o destino [%s] é de %d pedidos.\n", locationNames[destination], maxOrders);
-                    System.out.println("[ALERTA] Qualquer demanda acima desse valor causará travamento logístico (gargalo).");
+                    System.out.printf(
+                            "[RESULTADO] A capacidade máxima de atendimento simultâneo para o destino [%s] é de %d pedidos.\n",
+                            locationNames[destination], maxOrders);
+                    System.out.println(
+                            "[ALERTA] Qualquer demanda acima desse valor causará travamento logístico (gargalo).");
                     System.out.println("===============================================================");
                 }
             }
             default -> System.out.println("\nOpção inválida.");
+        }
+    }
+
+    private void showInnovationModule() {
+        System.out.println("\n===== MÓDULO 8: LABORATÓRIO DE INOVAÇÃO (KOSARAJU) =====");
+        System.out.println("[LOG] Varrendo a rede de dependências em busca de Comunidades e Ciclos (CFCs)...");
+        
+        CustomList<CustomList<Integer>> ciclos = productionGraph.findDependencyCycles();
+        
+        int numCiclos = 0;
+        Node<CustomList<Integer>> atual = ciclos.getHead();
+        while(atual != null) {
+            numCiclos++;
+            atual = atual.getNext();
+        }
+
+        if (numCiclos == 0) {
+            System.out.println("\n[SUCESSO] A rede está perfeitamente limpa! Nenhuma comunidade fechada ou ciclo fatal detectado.");
+        } else {
+            System.out.println("\n[ALERTA] O algoritmo de Kosaraju encontrou " + numCiclos + " comunidade(s) fortemente conexa(s)!");
+            System.out.println("Esses grupos representam ciclos fatais de dependência que travam a cozinha:\n");
+            
+            Node<CustomList<Integer>> cicloAtual = ciclos.getHead();
+            int contador = 1;
+            
+            while (cicloAtual != null) {
+                System.out.print("   Comunidade/Ciclo " + contador + ": [ ");
+                
+                Node<Integer> receitaAtual = cicloAtual.getData().getHead();
+                while(receitaAtual != null) {
+                    Recipe recipe = quickSearchService.searchById(receitaAtual.getData());
+                    String name = (recipe != null) ? recipe.getName() : "Receita ID " + receitaAtual.getData();
+                    
+                    System.out.print(name);
+                    
+                    if (receitaAtual.getNext() != null) {
+                        System.out.print(" <-> ");
+                    }
+                    receitaAtual = receitaAtual.getNext();
+                }
+                System.out.println(" ]");
+                
+                cicloAtual = cicloAtual.getNext();
+                contador++;
+            }
         }
     }
 }

@@ -6,13 +6,11 @@ import com.kitchen.app.datastructures.graph.Node;
 
 public class DependencyGraph {
     private int numRecipes;
-    // Agora o Grafo usa a lista universal guardando Inteiros
     private CustomList<Integer>[] adjacencies;
 
     @SuppressWarnings("unchecked")
     public DependencyGraph(int numRecipes) {
         this.numRecipes = numRecipes;
-        // Workaround do Java para criar arrays de tipos Genéricos
         this.adjacencies = new CustomList[numRecipes];
 
         for (int i = 0; i < numRecipes; i++) {
@@ -46,7 +44,6 @@ public class DependencyGraph {
     private GraphStack dfsCycleCheck(int vertex, int[] state, int[] parent) {
         state[vertex] = 1;
 
-        // Repare no Node<Integer> aqui!
         Node<Integer> current = adjacencies[vertex].getHead();
         while (current != null) {
             int neighbor = current.getData();
@@ -107,5 +104,16 @@ public class DependencyGraph {
 
         state[vertex] = 2;
         sequence.push(vertex);
+    }
+
+    public CustomList<Integer> getNeighbors(int vertex) {
+        if (vertex >= 0 && vertex < numRecipes) {
+            return adjacencies[vertex];
+        }
+        return null;
+    }
+
+    public int getNumVertices() {
+        return numRecipes;
     }
 }

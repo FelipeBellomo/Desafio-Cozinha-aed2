@@ -8,18 +8,13 @@ import com.kitchen.app.model.Recipe;
 
 public class MenuOptimizer {
 
-    /**
-     * Optimizes the menu using the 0/1 Knapsack DP Algorithm.
-     * constraintType: 1 = Max Time (min), 2 = Max Budget (cents)
-     * optimizationGoal: 1 = Maximize Rating, 2 = Maximize Profit
-     */
     public static List<Recipe> optimizeMenu(List<Recipe> availableRecipes, int maxCapacity, int constraintType, int optimizationGoal) {
         int n = availableRecipes.size();
 
         // DP Matrix: Rows = recipes, Columns = capacity
         double[][] dpTable = new double[n + 1][maxCapacity + 1];
 
-        // 1. Build the DP Table (Bottom-Up)
+        // build the DP Table (using Bottom-Up)
         for (int i = 1; i <= n; i++) {
             Recipe currentRecipe = availableRecipes.get(i - 1);
 
@@ -37,7 +32,7 @@ public class MenuOptimizer {
             }
         }
 
-        // 2. Backtracking: Trace back to find which recipes were selected
+        // backtracking, trace back to find which recipes were selected
         List<Recipe> optimizedMenu = new ArrayList<>();
         int remainingCapacity = maxCapacity;
 
@@ -52,17 +47,17 @@ public class MenuOptimizer {
         return optimizedMenu;
     }
 
-    // Helper method to extract the correct "weight" for the knapsack
+    // helper method to get the correct "weight" for the knapsack
     private static int getWeight(Recipe recipe, int constraintType) {
         if (constraintType == 1) {
             return recipe.getPrepTime();
         } else {
-            // Multiply by 100 to handle budget as integers (cents) to fit in the DP array index
+            // multiply by 100 to handle budget as integers (cents) to fit in the DP array index
             return (int) Math.round(recipe.getCost() * 100);
         }
     }
 
-    // Helper method to extract the correct "value" to maximize
+    // helper method to get the correct "value" to maximize
     private static double getValue(Recipe recipe, int optimizationGoal) {
         if (optimizationGoal == 1) {
             return recipe.getRating();

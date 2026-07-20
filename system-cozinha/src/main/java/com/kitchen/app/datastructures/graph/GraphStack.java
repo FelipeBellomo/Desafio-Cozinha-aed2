@@ -17,7 +17,7 @@ public class GraphStack {
         if (topIndex >= 0) {
             return elements[topIndex--];
         }
-        return -1; // Returns -1 if the stack is empty
+        return -1;
     }
 
     public boolean isEmpty() {

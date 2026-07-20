@@ -3,8 +3,8 @@ package com.kitchen.app.datastructures.graph;
 
 public class Route {
     private int destinationId;
-    private double weight; // Representa Tempo ou Distância da entrega
-    private int capacity;  // Representa limite de entregadores ou pedidos
+    private double weight; 
+    private int capacity; 
 
     public Route(int destinationId, double weight, int capacity) {
         this.destinationId = destinationId;

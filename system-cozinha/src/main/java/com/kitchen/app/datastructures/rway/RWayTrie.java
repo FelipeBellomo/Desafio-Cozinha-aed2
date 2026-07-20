@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RWayTrie<V> {
-    private TrieNode<V> root; // Agora o tipo V é passado explicitamente
+    private TrieNode<V> root;
     private int size;
 
     public RWayTrie() {
@@ -17,7 +17,7 @@ public class RWayTrie<V> {
             throw new IllegalArgumentException("Chave nula.");
 
         key = key.toLowerCase();
-        
+
         TrieNode<V> current = root;
         for (int i = 0; i < key.length(); i++) {
             char c = key.charAt(i);
@@ -36,15 +36,17 @@ public class RWayTrie<V> {
     }
 
     public V get(String key) {
-    if (key == null) throw new IllegalArgumentException("Chave nula.");
+        if (key == null)
+            throw new IllegalArgumentException("Chave nula.");
 
-    TrieNode<V> current = root;
-    for (int i = 0; i < key.length(); i++) {
-    char c = key.charAt(i);
-    current = current.next[c];
-    if (current == null) return null;
-    }
-    return current.val; // Não precisa mais de cast!
+        TrieNode<V> current = root;
+        for (int i = 0; i < key.length(); i++) {
+            char c = key.charAt(i);
+            current = current.next[c];
+            if (current == null)
+                return null;
+        }
+        return current.val;
     }
 
     private TrieNode<V> getNode(String key) {
@@ -60,8 +62,8 @@ public class RWayTrie<V> {
         return current;
     }
 
-    public boolean contains(String key){
-        return getNode(key)!=null;
+    public boolean contains(String key) {
+        return getNode(key) != null;
     }
 
     public List<String> keysWithPrefix(String prefix) {
