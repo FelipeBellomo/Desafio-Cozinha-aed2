@@ -102,3 +102,35 @@ Para comprovar o isolamento dos blocos e a leitura diretamente do arquivo binár
 4. **Realização da Busca:** No menu interativo do sistema, selecione a opção de busca de receita por ID, ou selecione o Livro de Receitas.
 
 5. **Comprovação:** O sistema exibirá os dados completos da receita com sucesso instantaneamente. Isso prova que a Árvore B navegou pelos offsets de bytes em disco, localizou o ponteiro do registro e buscou a receita de forma isolada, sem utilizar o arquivo pequenasReceitas.json.
+
+
+# Funcionalidades e Módulos Implementados no T2
+
+## Módulo 5: Oficina de Produção (Dependências)
+Controla a ordem lógica de preparação das receitas e impede erros de execução.  
+ - Modelagem: Grafo Direcionado Não-Ponderado (DependencyGraph), onde vértices são receitas e arestas indicam pré-requisitos.  
+ - Algoritmos: 
+    - DFS Cycle Check: Para validar se não há ciclos.  
+    - Ordenação Topológica: Para gerar a sequência perfeita de preparo.  
+ - Complexidade: $O(V + E)$, onde $V$ é o número de receitas e $E$ o número de dependências.
+ 
+ ## Módulo 6: O Menu Degustação VIP (Otimização)
+ Gera o melhor menu possível sujeito a restrições operacionais.  
+ - Modelagem: O problema foi modelado como o clássico problema da Mochila 0/1 utilizando Programação Dinâmica (MenuOptimizer).  
+ - Decisões: O "peso" da mochila pode ser o Tempo Máximo ou Orçamento. O "valor" maximizado pode ser o Lucro ou o Rating (Avaliação).  
+ - Complexidade: $O(N \times W)$, onde $N$ é o número de receitas candidatas e $W$ é a capacidade limite informada pelo usuário.
+ 
+ ## Módulo 7: O Pesadelo Logístico (Delivery)
+ Gerencia a rede de entregas, conexões entre pontos e vazão operacional.  
+ - Modelagem: Grafo Ponderado Direcionado/Não-Direcionado (LogisticsGraph) representando pontos de retirada e o restaurante principal.      
+ - Algoritmos:
+   - Dijkstra: Para encontrar o tempo mínimo de entrega (rotas mais rápidas) do restaurante até os pontos de distribuição. Complexidade: $O(V^2)$ na implementação com arrays.  
+   - Prim: Para descobrir a Árvore Geradora Mínima (MST), minimizando o custo para instalar a infraestrutura e conectar as filiais. Complexidade: $O(V^2)$.  
+   - Ford-Fulkerson: Para calcular o fluxo máximo da rede, identificando a capacidade simultânea de pedidos suportada antes de criar um gargalo. Complexidade: $O(E \times \text{Fluxo M\'aximo})$.  
+ 
+ ## Módulo 8: Laboratório de Inovação (Kosaraju)
+ Desafio Avançado Escolhido: Detecção de Ciclos Fatais de Dependência (CFCs).
+ - O Problema: Como a cozinha possui diversas receitas, o risco de ocorrer um deadlock logístico (ex: Receita A exige B, B exige C, e C exige A) é grande.  
+ - A Solução: Implementação do Algoritmo de Kosaraju (KosarajuAlgorithm). O algoritmo executa uma DFS, gera um Grafo Transposto e realiza uma segunda varredura DFS consumindo uma Pilha.  
+ - Decisões: O Kosaraju foi escolhido por sua elegância em descobrir Componentes Fortemente Conexos (CFCs) na rede, localizando automaticamente as bolhas que travam a cozinha.  
+ - Complexidade: Otimizado em tempo linear $O(V + E)$. 
